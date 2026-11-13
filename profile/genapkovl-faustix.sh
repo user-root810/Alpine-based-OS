@@ -1,34 +1,39 @@
 #!/bin/sh
-# configs + services + branding.
+# Génère faustix.apkovl.tar.gz : configs + services + branding.
 set -eu
 
 TARGET="faustix.apkovl.tar.gz"
 WORK=$(mktemp -d)
-ROOT="$(dirname "$0")/../overlay-root"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)/overlay-root"
 
 # Copie intégrale de l'arborescence d'overlay
-cp -r "$ROOT"/* "$WORK"/
+mkdir -p "$WORK"
+cp -r "$ROOT"/etc "$ROOT"/usr "$WORK"/
 
-mkdir -p "$WORK"/etc/runlevels/{default,boot} \
-         "$WORK"/etc/local.d
+# ---- services (démarrage graphique) ----
+mkdir -p "$WORK"/etc/runlevels/default "$WORK"/etc/local.d
 
-# ---- services ----
-rc_add() { ln -sf "/etc/init.d/$2" "$WORK/etc/runlevels/$3/$2"; }
-rc_add dbus default
-rc_add elogind default
-rc_add sddm default
-rc_add networkmanager default
-rc_add crond default
+# rc_add <runlevel> <service>
+rc_add() {
+	mkdir -p "$WORK/etc/runlevels/$1"
+	ln -sf "/etc/init.d/$2" "$WORK/etc/runlevels/$1/$2"
+}
 
-# ---- régénérer le cache ----
+rc_add default dbus
+rc_add default elogind
+rc_add default sddm
+rc_add default networkmanager
+rc_add default crond
+rc_add default local
+
+# ---- régénérer le cache d'icônes au boot ----
 cat > "$WORK"/etc/local.d/branding.start <<'EOF'
 #!/bin/sh
 gtk-update-icon-cache -f /usr/share/icons/hicolor 2>/dev/null || true
 EOF
 chmod +x "$WORK"/etc/local.d/branding.start
-rc_add local default
 
-# ---- Plymouth ----
+# ---- Plymouth par défaut ----
 mkdir -p "$WORK"/etc/plymouth
 echo "[Daemon]" > "$WORK"/etc/plymouth/plymouthd.conf
 echo "Theme=faustix" >> "$WORK"/etc/plymouth/plymouthd.conf
@@ -39,6 +44,7 @@ echo "faustix" > "$WORK"/etc/hostname
 tar -czf "$TARGET" -C "$WORK" etc usr
 rm -rf "$WORK"
 echo "OK : $TARGET"
+
 # FAUST IS HERE
 # FAUST IS HERE
 # FAUST IS HERE

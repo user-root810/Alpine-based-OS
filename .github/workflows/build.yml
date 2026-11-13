@@ -54,17 +54,13 @@ jobs:
           convert "$WALL" -quality 88 \
             overlay-root/usr/share/wallpapers/faustix/contents/images/faustix.jpg
 
-      - name: Construire l'overlay apkovl
-        run: |
-          chmod +x profile/genapkovl-faustix.sh
-          ./profile/genapkovl-faustix.sh
-
       - name: Build ISO dans le conteneur Alpine
         run: |
           docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
             apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux \
               abuild fakeroot
+            abuild-keygen -n -a -i
             git clone --depth 1 --branch 3.21-stable \
               https://github.com/alpinelinux/aports.git /tmp/aports
             cp /work/profile/mkimg.faustix.sh /tmp/aports/scripts/

@@ -64,13 +64,14 @@ jobs:
           docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
             apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux \
-              abuild
+              abuild fakeroot
             git clone --depth 1 --branch 3.21-stable \
               https://github.com/alpinelinux/aports.git /tmp/aports
             cp /work/profile/mkimg.faustix.sh /tmp/aports/scripts/
             cp /work/profile/genapkovl-faustix.sh /tmp/aports/scripts/
             chmod +x /tmp/aports/scripts/*.sh
-            sh /tmp/aports/scripts/mkimage.sh \
+            cd /tmp/aports/scripts
+            sh mkimage.sh \
               --tag faustix \
               --outdir /work/out \
               --arch x86_64 \

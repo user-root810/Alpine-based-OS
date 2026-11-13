@@ -1,0 +1,51 @@
+name: Build Faustix ISO
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Faustix
+        uses: actions/checkout@v4
+
+      - name: Préparer les binaires (icônes redimensionnées)
+        run: |
+          sudo apt-get update && sudo apt-get install -y imagemagick
+          convert assets/demon-512.png -resize 48x48 \
+            overlay-root/usr/share/icons/hicolor/48x48/apps/faustix.png
+          convert assets/wallpaper.jpg -quality 85 \
+            overlay-root/usr/share/wallpapers/faustix/contents/images/faustix.jpg
+
+      - name: Construire l'overlay apkovl
+        run: |
+          chmod +x profile/genapkovl-faustix.sh
+          ./profile/genapkovl-faustix.sh
+          mkdir -p out
+          mv faustix.apkovl.tar.gz out/
+
+      - name: Build ISO dans le conteneur Alpine
+        run: |
+          docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -ec '
+            apk add --no-cache bash git xorriso squashfs-tools mkinitfs \
+              mtools dosfstools syslinux
+            git clone --depth 1 --branch v3.21 \
+              https://gitlab.alpinelinux.org/alpine/aports.git /tmp/aports
+            cp /work/profile/mkimg.faustix.sh /tmp/aports/scripts/
+            chmod +x /tmp/aports/scripts/mkimg.faustix.sh
+            sh /tmp/aports/scripts/mkimage.sh \
+              --tag faustix \
+              --outdir /work/out \
+              --arch x86_64 \
+              --apkovl /work/out/faustix.apkovl.tar.gz \
+              --profile faustix
+          '
+
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: faustix-iso
+          path: out/*.iso

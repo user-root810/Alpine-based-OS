@@ -15,7 +15,7 @@ jobs:
       - name: Préparer les binaires (icônes redimensionnées)
         run: |
           sudo apt-get update && sudo apt-get install -y imagemagick
-          convert assets/demon-512.png -resize 48x48 \
+          convert assets/IMG_20261113_161807_01.png -resize 48x48 \
             overlay-root/usr/share/icons/hicolor/48x48/apps/faustix.png
           convert assets/IMG_20261113_161951_01.png -quality 85 \
             overlay-root/usr/share/wallpapers/faustix/contents/images/faustix.jpg

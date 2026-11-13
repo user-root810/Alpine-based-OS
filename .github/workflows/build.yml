@@ -59,7 +59,8 @@ jobs:
           docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
             apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux \
-              abuild fakeroot
+              abuild fakeroot \
+              alpine-conf
             abuild-keygen -n -a
             cp /root/.abuild/*.rsa.pub /etc/apk/keys/
             git clone --depth 1 --branch 3.21-stable \

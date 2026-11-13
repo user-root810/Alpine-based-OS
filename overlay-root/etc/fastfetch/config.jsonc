@@ -1,0 +1,25 @@
+{
+  "logo": {
+    "type": "auto",             // détecte le support pixels du terminal
+    "source": "/etc/fastfetch/logo.png",
+    "width": 32,
+    "padding": { "top": 1, "left": 2, "right": 3 }
+  },
+  "display": { "separator": " ── ", "color": { "keys": "red", "title": "red" } },
+  "modules": [
+    "title",
+    { "type": "os", "key": " OS     " },
+    { "type": "kernel", "key": " Kernel " },
+    { "type": "uptime", "key": " Uptime " },
+    { "type": "packages", "key": " Pkg    " },
+    { "type": "shell", "key": " Shell  " },
+    { "type": "de", "key": " DE     " },
+    { "type": "wm", "key": " WM     " },
+    { "type": "terminal", "key": " Term   " },
+    { "type": "cpu", "key": " CPU    " },
+    { "type": "memory", "key": " Mem    " },
+    { "type": "disk", "key": " Disk   " },
+    "break",
+    "colors"
+  ]
+}

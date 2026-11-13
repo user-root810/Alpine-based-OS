@@ -12,26 +12,60 @@ jobs:
       - name: Checkout Faustix
         uses: actions/checkout@v4
 
-      - name: Préparer les binaires (icônes redimensionnées)
+      - name: Traiter les images (auto-détection)
         run: |
           sudo apt-get update && sudo apt-get install -y imagemagick
-          convert assets/IMG_20261113_161807_01.png -resize 48x48 \
+
+          # Trouve tous les fichiers image dans assets/
+          IMGS=$(find assets -type f \( -iname '*.png' -o -iname '*.jpg' \
+                 -o -iname '*.jpeg' -o -iname '*.webp' \))
+          N=$(echo "$IMGS" | grep -c .)
+          echo "Images trouvées : $N"
+          if [ "$N" -lt 2 ]; then
+            echo "::error::Il faut au moins 2 images dans assets/ (wallpaper + icône)"
+            exit 1
+          fi
+
+          # Plus volumineux = wallpaper, plus léger = icône diablotin
+          WALL=$(echo "$IMGS" | xargs -I{} stat -c '%s {}' {} | sort -rn | head -1 | cut -d' ' -f2-)
+          DEMON=$(echo "$IMGS" | xargs -I{} stat -c '%s {}' {} | sort -n  | head -1 | cut -d' ' -f2-)
+          echo "Wallpaper : $WALL"
+          echo "Diablotin : $DEMON"
+
+          # Destinations
+          mkdir -p overlay-root/usr/share/icons/hicolor/512x512/apps \
+                   overlay-root/usr/share/icons/hicolor/48x48/apps \
+                   overlay-root/usr/share/plymouth/themes/faustix \
+                   overlay-root/usr/share/sddm/themes/faustix \
+                   overlay-root/etc/fastfetch \
+                   overlay-root/usr/share/wallpapers/faustix/contents/images
+
+          # Diablotin : rend le fond blanc transparent, puis décline partout
+          convert "$DEMON" -fuzz 12% -transparent white \
+            overlay-root/usr/share/icons/hicolor/512x512/apps/faustix.png
+          convert "$DEMON" -fuzz 12% -transparent white -resize 48x48 \
             overlay-root/usr/share/icons/hicolor/48x48/apps/faustix.png
-          convert assets/IMG_20261113_161951_01.png -quality 85 \
+          convert "$DEMON" -fuzz 12% -transparent white \
+            overlay-root/etc/fastfetch/logo.png
+          convert "$DEMON" -fuzz 12% -transparent white \
+            overlay-root/usr/share/plymouth/themes/faustix/demon-512.png
+          convert "$DEMON" -fuzz 12% -transparent white \
+            overlay-root/usr/share/sddm/themes/faustix/demon-512.png
+
+          # Wallpaper (converti en JPG quelle que soit son origine)
+          convert "$WALL" -quality 88 \
             overlay-root/usr/share/wallpapers/faustix/contents/images/faustix.jpg
 
       - name: Construire l'overlay apkovl
         run: |
           chmod +x profile/genapkovl-faustix.sh
           ./profile/genapkovl-faustix.sh
-          mkdir -p out
-          mv faustix.apkovl.tar.gz out/
 
       - name: Build ISO dans le conteneur Alpine
         run: |
-          docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -ec '
-            apk add --no-cache bash git xorriso squashfs-tools mkinitfs \
-              mtools dosfstools syslinux
+          docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -ex '
+            apk add --no-cache --progress-bar bash git xorriso squashfs-tools \
+              mkinitfs mtools dosfstools syslinux
             git clone --depth 1 --branch v3.21 \
               https://gitlab.alpinelinux.org/alpine/aports.git /tmp/aports
             cp /work/profile/mkimg.faustix.sh /tmp/aports/scripts/
@@ -40,7 +74,7 @@ jobs:
               --tag faustix \
               --outdir /work/out \
               --arch x86_64 \
-              --apkovl /work/out/faustix.apkovl.tar.gz \
+              --apkovl /work/faustix.apkovl.tar.gz \
               --profile faustix
           '
 

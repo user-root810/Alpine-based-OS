@@ -38,6 +38,7 @@ jobs:
                    overlay-root/etc/fastfetch \
                    overlay-root/usr/share/wallpapers/faustix/contents/images
 
+          # Diablotin : fond blanc -> transparent, puis décliné partout
           convert "$DEMON" -fuzz 12% -transparent white \
             overlay-root/usr/share/icons/hicolor/512x512/apps/faustix.png
           convert "$DEMON" -fuzz 12% -transparent white -resize 48x48 \
@@ -49,6 +50,7 @@ jobs:
           convert "$DEMON" -fuzz 12% -transparent white \
             overlay-root/usr/share/sddm/themes/faustix/demon-512.png
 
+          # Wallpaper (converti en JPG quelle que soit son origine)
           convert "$WALL" -quality 88 \
             overlay-root/usr/share/wallpapers/faustix/contents/images/faustix.jpg
 
@@ -72,6 +74,8 @@ jobs:
               --tag faustix \
               --outdir /work/out \
               --arch x86_64 \
+              --repository http://dl-cdn.alpinelinux.org/alpine/v3.21/main \
+              --repository http://dl-cdn.alpinelinux.org/alpine/v3.21/community \
               --profile faustix
           '
 

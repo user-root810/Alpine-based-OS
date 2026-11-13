@@ -16,7 +16,6 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y imagemagick
 
-          # Trouve tous les fichiers image dans assets/
           IMGS=$(find assets -type f \( -iname '*.png' -o -iname '*.jpg' \
                  -o -iname '*.jpeg' -o -iname '*.webp' \))
           N=$(echo "$IMGS" | grep -c .)
@@ -40,7 +39,7 @@ jobs:
                    overlay-root/etc/fastfetch \
                    overlay-root/usr/share/wallpapers/faustix/contents/images
 
-          # Diablotin : rend le fond blanc transparent, puis décline partout
+          # Diablotin : fond blanc -> transparent, puis décliné partout
           convert "$DEMON" -fuzz 12% -transparent white \
             overlay-root/usr/share/icons/hicolor/512x512/apps/faustix.png
           convert "$DEMON" -fuzz 12% -transparent white -resize 48x48 \
@@ -63,7 +62,7 @@ jobs:
 
       - name: Build ISO dans le conteneur Alpine
         run: |
-            docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
+          docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
             apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux
             git clone --depth 1 --branch v3.21 \
@@ -78,7 +77,6 @@ jobs:
               --profile faustix
           '
 
-          
       - name: Upload ISO
         uses: actions/upload-artifact@v4
         with:

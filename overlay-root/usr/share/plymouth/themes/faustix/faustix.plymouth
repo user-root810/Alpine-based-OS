@@ -1,0 +1,11 @@
+[Plymouth Theme]
+Name=Faustix
+Description=Pacte en cours... veuillez patienter
+ModuleName=boot-turtle
+
+[boot-turtle]
+ImageDir=/usr/share/plymouth/themes/faustix
+ImageFile=demon-512.png
+WatermarkVerticalPercentage=50
+WatermarkHorizontalPercentage=50
+TransitionFadeOverTime=0.6

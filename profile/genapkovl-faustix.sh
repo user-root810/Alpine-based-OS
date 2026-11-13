@@ -1,8 +1,9 @@
 #!/bin/sh
-# Génère faustix.apkovl.tar.gz : configs + services + branding.
+# Génère l'overlay Faustix. Usage : genapkovl-faustix.sh [ARCH] [SORTIE]
 set -eu
 
-TARGET="faustix.apkovl.tar.gz"
+ARCH="${1:-x86_64}"
+TARGET="${2:-faustix.apkovl.tar.gz}"
 WORK=$(mktemp -d)
 ROOT="$(cd "$(dirname "$0")/.." && pwd)/overlay-root"
 
@@ -11,8 +12,6 @@ mkdir -p "$WORK"
 cp -r "$ROOT"/etc "$ROOT"/usr "$WORK"/
 
 # ---- services (démarrage graphique) ----
-mkdir -p "$WORK"/etc/runlevels/default "$WORK"/etc/local.d
-
 # rc_add <runlevel> <service>
 rc_add() {
 	mkdir -p "$WORK/etc/runlevels/$1"
@@ -27,6 +26,7 @@ rc_add default crond
 rc_add default local
 
 # ---- régénérer le cache d'icônes au boot ----
+mkdir -p "$WORK"/etc/local.d
 cat > "$WORK"/etc/local.d/branding.start <<'EOF'
 #!/bin/sh
 gtk-update-icon-cache -f /usr/share/icons/hicolor 2>/dev/null || true

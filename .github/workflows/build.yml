@@ -63,8 +63,8 @@ jobs:
 
       - name: Build ISO dans le conteneur Alpine
         run: |
-          docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
-            apk add --no-cache --progress-bar bash git xorriso squashfs-tools \
+            docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
+            apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux
             git clone --depth 1 --branch v3.21 \
               https://gitlab.alpinelinux.org/alpine/aports.git /tmp/aports

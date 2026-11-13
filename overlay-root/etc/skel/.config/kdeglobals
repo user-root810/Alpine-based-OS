@@ -1,0 +1,12 @@
+[General]
+ColorScheme=FaustixDark
+Name=FaustixDark
+
+[KDE]
+widgetStyle=Breeze
+
+[Icons]
+Theme=breeze-dark
+
+[KDE]
+LookAndFeelPackage=org.kde.breezedark.desktop

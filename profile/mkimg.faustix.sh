@@ -11,10 +11,9 @@ profile_faustix() {
 	apkovl="genapkovl-faustix.sh"
 	syslinux_timeout="3"
 
-	apks="$apks
+		apks="$apks
 		plasma-desktop
 		plasma-nm
-		kde-plasma-network-management
 		sddm
 		powerdevil
 		konsole
@@ -23,7 +22,7 @@ profile_faustix() {
 		breeze-icons
 		breeze-gtk
 		font-noto
-		font-jetbrainsmono-nerd-font
+		font-jetbrains-mono-nerd
 		fastfetch
 		networkmanager
 		networkmanager-wifi

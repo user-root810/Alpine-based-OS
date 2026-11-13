@@ -1,0 +1,6 @@
+[Containments][1][Wallpaper][org.kde.image][General]
+Image=file:///usr/share/wallpapers/faustix/contents/images/faustix.jpg
+SlidePaths=/usr/share/wallpapers/faustix
+
+[Containments][1][Wallpaper][org.kde.image]
+pluginname=org.kde.image

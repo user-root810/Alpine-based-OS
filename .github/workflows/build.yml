@@ -60,7 +60,8 @@ jobs:
             apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux \
               abuild fakeroot
-            abuild-keygen -n -a -i
+            abuild-keygen -n -a
+            cp /root/.abuild/*.rsa.pub /etc/apk/keys/
             git clone --depth 1 --branch 3.21-stable \
               https://github.com/alpinelinux/aports.git /tmp/aports
             cp /work/profile/mkimg.faustix.sh /tmp/aports/scripts/

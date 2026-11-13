@@ -63,7 +63,7 @@ jobs:
 
       - name: Build ISO dans le conteneur Alpine
         run: |
-          docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -ex '
+          docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
             apk add --no-cache --progress-bar bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux
             git clone --depth 1 --branch v3.21 \
@@ -78,6 +78,7 @@ jobs:
               --profile faustix
           '
 
+          
       - name: Upload ISO
         uses: actions/upload-artifact@v4
         with:

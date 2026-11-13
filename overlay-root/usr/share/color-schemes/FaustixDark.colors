@@ -1,0 +1,34 @@
+[ColorScheme]
+Name=FaustixDark
+
+[Colors:Window]
+BackgroundNormal=10,10,13
+BackgroundAlternate=22,22,28
+ForegroundNormal=217,213,207
+ForegroundInactive=120,116,112
+
+[Colors:View]
+BackgroundNormal=14,14,18
+BackgroundAlternate=22,22,28
+ForegroundNormal=217,213,207
+Link=a,18,38
+Visited=161,18,38
+
+[Colors:Button]
+BackgroundNormal=18,18,23
+ForegroundNormal=217,213,207
+
+[Colors:Selection]
+BackgroundNormal=161,18,38
+ForegroundNormal=255,255,255
+
+[Colors:Tooltip]
+BackgroundNormal=10,10,13
+ForegroundNormal=217,213,207
+
+[Colors:Panel]                 # <- le panel / barre des tâches
+BackgroundNormal=0,0,0         # <- NOIR PUR
+ForegroundNormal=217,213,207
+
+[KDE]
+widgetStyle=Breeze

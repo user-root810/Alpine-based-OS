@@ -65,7 +65,7 @@ jobs:
           docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
             apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux
-                        git clone --depth 1 --branch v3.21 \
+                          git clone --depth 1 --branch 3.21-stable \
               https://github.com/alpinelinux/aports.git /tmp/aports
             cp /work/profile/mkimg.faustix.sh /tmp/aports/scripts/
             chmod +x /tmp/aports/scripts/mkimg.faustix.sh

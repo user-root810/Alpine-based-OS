@@ -31,7 +31,6 @@ jobs:
           echo "Wallpaper : $WALL"
           echo "Diablotin : $DEMON"
 
-          # Destinations
           mkdir -p overlay-root/usr/share/icons/hicolor/512x512/apps \
                    overlay-root/usr/share/icons/hicolor/48x48/apps \
                    overlay-root/usr/share/plymouth/themes/faustix \
@@ -39,7 +38,6 @@ jobs:
                    overlay-root/etc/fastfetch \
                    overlay-root/usr/share/wallpapers/faustix/contents/images
 
-          # Diablotin : fond blanc -> transparent, puis décliné partout
           convert "$DEMON" -fuzz 12% -transparent white \
             overlay-root/usr/share/icons/hicolor/512x512/apps/faustix.png
           convert "$DEMON" -fuzz 12% -transparent white -resize 48x48 \
@@ -51,7 +49,6 @@ jobs:
           convert "$DEMON" -fuzz 12% -transparent white \
             overlay-root/usr/share/sddm/themes/faustix/demon-512.png
 
-          # Wallpaper (converti en JPG quelle que soit son origine)
           convert "$WALL" -quality 88 \
             overlay-root/usr/share/wallpapers/faustix/contents/images/faustix.jpg
 
@@ -63,18 +60,18 @@ jobs:
       - name: Build ISO dans le conteneur Alpine
         run: |
           docker run --rm -v "$PWD:/work" alpine:3.21 /bin/sh -exc '
-                      apk add --no-cache bash git xorriso squashfs-tools \
+            apk add --no-cache bash git xorriso squashfs-tools \
               mkinitfs mtools dosfstools syslinux \
               abuild
-                          git clone --depth 1 --branch 3.21-stable \
+            git clone --depth 1 --branch 3.21-stable \
               https://github.com/alpinelinux/aports.git /tmp/aports
             cp /work/profile/mkimg.faustix.sh /tmp/aports/scripts/
-            chmod +x /tmp/aports/scripts/mkimg.faustix.sh
+            cp /work/profile/genapkovl-faustix.sh /tmp/aports/scripts/
+            chmod +x /tmp/aports/scripts/*.sh
             sh /tmp/aports/scripts/mkimage.sh \
               --tag faustix \
               --outdir /work/out \
               --arch x86_64 \
-              --apkovl /work/faustix.apkovl.tar.gz \
               --profile faustix
           '
 

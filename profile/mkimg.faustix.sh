@@ -34,5 +34,8 @@ profile_faustix() {
 		dbus
 		mesa-dri-gallium
 		eudev
+		xorg-server
+		xf86-input-libinput
+		xorg-server-xwayland
 	"
 }

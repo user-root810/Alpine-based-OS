@@ -12,9 +12,14 @@ profile_faustix() {
 	syslinux_timeout="3"
 
 		apks="$apks
+		
+		xorg-server
+		xf86-input-libinput
+		xorg-server-xwayland
 		plasma-desktop
 		plasma-nm
 		sddm
+		sddm-kcm
 		powerdevil
 		konsole
 		dolphin
@@ -33,9 +38,9 @@ profile_faustix() {
 		polkit-elogind
 		dbus
 		mesa-dri-gallium
+		mesa-gl
 		eudev
-		xorg-server
-		xf86-input-libinput
-		xorg-server-xwayland
+		sudo
+		sddm-theme-elaris
 	"
 }

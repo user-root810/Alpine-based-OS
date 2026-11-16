@@ -33,9 +33,11 @@ rc_add default local
 mkdir -p "$tmp"/etc/apk
 cat > "$tmp"/etc/apk/world <<'EOF'
 alpine-base
+xorg-server
+xf86-input-libinput
+xorg-server-xwayland
 plasma-desktop
 plasma-nm
-kde-plasma-network-management
 sddm
 powerdevil
 konsole
@@ -44,7 +46,7 @@ ark
 breeze-icons
 breeze-gtk
 font-noto
-font-jetbrainsmono-nerd-font
+font-jetbrains-mono-nerd
 fastfetch
 networkmanager
 networkmanager-wifi
@@ -55,7 +57,32 @@ elogind
 polkit-elogind
 dbus
 mesa-dri-gallium
+mesa-gl
 eudev
+sudo
+EOF
+
+# ---- utilisateur live + droits sudo ----
+cat > "$tmp"/etc/local.d/faustix-user.start <<'EOF'
+#!/bin/sh
+getent passwd faustix || adduser -D -s /bin/sh faustix
+echo 'faustix ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/faustix || true
+mkdir -p /home/faustix/.config
+cp -r /etc/skel/.config/* /home/faustix/.config/ 2>/dev/null || true
+chown -R faustix:faustix /home/faustix
+EOF
+chmod +x "$tmp"/etc/local.d/faustix-user.start
+
+# ---- autologin SDDM en session Plasma Wayland ----
+mkdir -p "$tmp"/etc/sddm.conf.d
+cat > "$tmp"/etc/sddm.conf.d/live.conf <<'EOF'
+[Autologin]
+User=faustix
+Session=plasma
+Relogin=false
+
+[X11]
+ServerArguments=-nolisten tcp -background none -noreset
 EOF
 
 # ---- régénérer le cache d'icônes au boot ----
@@ -65,7 +92,7 @@ gtk-update-icon-cache -f /usr/share/icons/hicolor 2>/dev/null || true
 EOF
 chmod +x "$tmp"/etc/local.d/branding.start
 
-# ---- Plymouth ----
+# ---- Plymouth par défaut ----
 mkdir -p "$tmp"/etc/plymouth
 echo "[Daemon]" > "$tmp"/etc/plymouth/plymouthd.conf
 echo "Theme=faustix" >> "$tmp"/etc/plymouth/plymouthd.conf
@@ -73,7 +100,7 @@ echo "Theme=faustix" >> "$tmp"/etc/plymouth/plymouthd.conf
 # ---- hostname ----
 echo "$HOSTNAME" > "$tmp"/etc/hostname
 
-# overlay
+# Écrit l'overlay DANS le répertoire courant (exigé par mkimage)
 tar -c -C "$tmp" etc usr | gzip -9n > "$TARGET"
 rm -rf "$tmp"
 echo "OK : $TARGET"

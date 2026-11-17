@@ -35,7 +35,7 @@ cat > "$tmp"/etc/apk/world <<'EOF'
 alpine-base
 xorg-server
 xf86-input-libinput
-xorg-server-xwayland
+xwayland
 plasma-desktop
 plasma-nm
 sddm
@@ -60,6 +60,7 @@ mesa-dri-gallium
 mesa-gl
 eudev
 sudo
+plasma-workspace-x11
 EOF
 
 # ---- utilisateur live + droits sudo ----

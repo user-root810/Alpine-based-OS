@@ -15,7 +15,7 @@ profile_faustix() {
 		
 		xorg-server
 		xf86-input-libinput
-		xorg-server-xwayland
+		xwayland
 		plasma-desktop
 		plasma-nm
 		sddm
@@ -41,6 +41,5 @@ profile_faustix() {
 		mesa-gl
 		eudev
 		sudo
-		sddm-theme-elaris
 	"
 }

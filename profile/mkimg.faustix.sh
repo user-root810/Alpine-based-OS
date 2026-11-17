@@ -41,5 +41,6 @@ profile_faustix() {
 		mesa-gl
 		eudev
 		sudo
+		plasma-workspace-x11
 	"
 }
